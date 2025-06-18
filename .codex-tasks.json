@@ -1,0 +1,26 @@
+[
+  {
+    "id": "01-indicators",
+    "title": "Add SMA20, RSI14 & MACD(12/26/9)",
+    "context": ["src/lib/indicators.ts"],
+    "edit": ["Implement pure‐TS funcs sma20(), rsi14(), macd12269() ≤ 120 LOC"],
+    "tests": ["indicators.test.ts: fixtures for sma20, rsi14, macd"],
+    "success": "pnpm test green"
+  },
+  {
+    "id": "02-data-provider",
+    "title": "Add CoinbasePro 5-min REST + Kraken fallback",
+    "context": ["src/data/coinbase.ts", "src/data/kraken.ts", "src/app/api/candles/route.ts"],
+    "edit": ["fetchCandles() transforms API → {time, open, high, low, close, volume}", "fallback logic", "≤ 120 LOC"],
+    "tests": ["mock fetch returns 300 candles; fallback triggers on error"],
+    "success": "API route returns JSON; pnpm test green"
+  },
+  {
+    "id": "03-dashboard-ui",
+    "title": "Render MarketChart + PriceCard + SignalCard",
+    "context": ["src/components/*", "src/app/page.tsx"],
+    "edit": ["Chart candles + sma20 overlay; PriceCard shows last price & 24h Δ; SignalCard uses getSignal()"],
+    "tests": ["Playwright: chart loads; card displays BUY/SELL/HOLD"],
+    "success": "Lighthouse mobile blocking < 75 ms"
+  }
+]

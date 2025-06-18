@@ -1,0 +1,14 @@
+name: BitDash-Lite
+image: node:18-bullseye
+ports:
+  - port: 3000
+    visibility: public
+dev:
+  setup:
+    - corepack enable
+    - pnpm install --frozen-lockfile
+  command: pnpm dev
+tasks:
+  test: pnpm test
+  lint: pnpm lint
+  build: pnpm build

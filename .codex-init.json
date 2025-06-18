@@ -1,0 +1,8 @@
+{
+  "runtime": "node18",
+  "package_manager": "pnpm",
+  "test_command": "pnpm test",
+  "lint_command": "pnpm lint",
+  "allow_internet": false,
+  "auto_merge": true
+}
