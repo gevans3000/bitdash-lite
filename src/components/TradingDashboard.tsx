@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { PriceData, TradingSignal } from '@/lib/types';
 import { getSimplePrice } from '@/data/coingecko'; // Keep for now, but will be removed later
 import TradingViewWidget from './TradingViewWidget';
+
 import SignalCard from './SignalCard';
 import SentimentGauge from './SentimentGauge';
 import VolatilityMeter from './VolatilityMeter'; // New import
 import TrendCard from './TrendCard'; // New import
 import { format } from 'date-fns';
 import OrderBook from './OrderBook';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export default function TradingDashboard() {
   const [symbol, setSymbol] = useState('BTC-USD');
@@ -83,8 +85,26 @@ export default function TradingDashboard() {
         
         {/* Chart */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div className="md:col-span-2 bg-white p-4 rounded-lg shadow-sm border" style={{ height: '500px' }}>
-            <TradingViewWidget />
+          <div className="md:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col" style={{ height: '600px' }}>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{symbol} Chart</h2>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                  5m
+                </button>
+                <button className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                  15m
+                </button>
+                <button className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                  1h
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 relative">
+              <ErrorBoundary>
+                <TradingViewWidget />
+              </ErrorBoundary>
+            </div>
           </div>
           <div className="md:col-span-1">
             <OrderBook />

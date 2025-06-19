@@ -1,10 +1,19 @@
 export interface Candle {
-  time: number;
+  time: number; // Timestamp in seconds
   open: number;
   high: number;
   low: number;
   close: number;
-  volume: number;
+  volume?: number; // Make volume optional as it's not always available
+}
+
+export interface CandleWithTime {
+  time: string; // ISO date string
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume?: number;
 }
 
 export interface PriceData {
@@ -45,4 +54,20 @@ export interface TradingSignal {
     profitTarget1: string;
     profitTarget2: string;
   };
+}
+
+export interface OrderBook {
+  bids: [number, number][]; // [price, size][]
+  asks: [number, number][]; // [price, size][]
+  timestamp?: number;
+}
+
+export interface LiquidityZone {
+  type: 'support' | 'resistance';
+  price: number;
+  volume: number;
+}
+
+export interface OrderBookZone extends LiquidityZone {
+  // Add any additional properties specific to order book zones
 }
