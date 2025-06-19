@@ -1,0 +1,31 @@
+# Ignore artifacts:
+.next
+node_modules
+coverage
+build
+dist
+
+# Ignore all HTML files:
+**/*.html
+
+# Ignore files in the public directory:
+/public/**
+
+# Ignore all dotfiles:
+.*
+!.*.json
+!.*.md
+!.*.yml
+!.*.yaml
+!.*.js
+!.*.ts
+!.*.jsx
+!.*.tsx
+
+# Ignore package-lock.json and similar files:
+*-lock.*
+
+# Ignore IDE specific files:
+.vscode/*
+.idea/*
+*.sublime-*

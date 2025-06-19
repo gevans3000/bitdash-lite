@@ -1,10 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BitDash Lite
+
+A lightweight cryptocurrency trading dashboard with real-time market data and technical analysis.
+
+## Features
+
+- Real-time price data from multiple exchanges
+- Technical indicators (RSI, MACD, SMA)
+- Trading signals
+- Responsive UI with interactive charts
+- TypeScript support
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type checking
+- [Jest](https://jestjs.io/) - Unit testing
+- [Playwright](https://playwright.dev/) - E2E testing
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
+npm install
+# or
+yarn
+
+# Start development server
 npm run dev
 # or
 yarn dev
