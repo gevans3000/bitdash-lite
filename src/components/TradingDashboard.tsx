@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { PriceData, TradingSignal } from '@/lib/types';
 import { getSimplePrice } from '@/data/coingecko'; // Keep for now, but will be removed later
 import TradingViewWidget from './TradingViewWidget';
+import { useCandles } from '@/hooks/useCandles'; // Import the useCandles hook
 
 import SignalCard from './SignalCard';
 import SentimentGauge from './SentimentGauge';
@@ -12,12 +13,17 @@ import TrendCard from './TrendCard'; // New import
 import { format } from 'date-fns';
 import OrderBook from './OrderBook';
 import { ErrorBoundary } from './ErrorBoundary';
+import PositionSizer from './PositionSizer'; // Import PositionSizer
 
 export default function TradingDashboard() {
   const [symbol, setSymbol] = useState('BTC-USD');
   const [priceData, setPriceData] = useState<PriceData>({ price: 0, change: 0 });
   const [signal, setSignal] = useState<TradingSignal>({ direction: 'NEUTRAL', strength: 'WEAK', timestamp: Date.now(), indicators: {}, reason: 'Initializing signal...' }); // Use TradingSignal type
   const [lastUpdate, setLastUpdate] = useState<string>('');
+
+  const { candles, isLoading: candlesLoading, error: candlesError } = useCandles({ days: 7 }); // Fetch 7 days of candle data
+  const [tradeEntryPrice, setTradeEntryPrice] = useState<number | null>(null);
+  const [tradeStopLossPrice, setTradeStopLossPrice] = useState<number | null>(null);
 
   // Fetch price data
   useEffect(() => {
@@ -102,12 +108,20 @@ export default function TradingDashboard() {
             </div>
             <div className="flex-1 relative">
               <ErrorBoundary>
-                <TradingViewWidget />
+                {candlesLoading && <p>Loading chart data...</p>}
+                {candlesError && <p className="text-red-500">Error loading chart: {candlesError.message}</p>}
+                {!candlesLoading && !candlesError && candles.length > 0 && (
+                  <TradingViewWidget />
+                )}
+                {!candlesLoading && !candlesError && candles.length === 0 && (
+                  <p>No chart data available.</p>
+                )}
               </ErrorBoundary>
             </div>
           </div>
-          <div className="md:col-span-1">
+          <div className="md:col-span-1 flex flex-col space-y-4">
             <OrderBook />
+            <PositionSizer entryPrice={tradeEntryPrice} stopLossPrice={tradeStopLossPrice} />
           </div>
         </div>
         

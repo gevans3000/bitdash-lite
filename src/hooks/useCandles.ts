@@ -36,7 +36,8 @@ export const useCandles = ({
         const low = Number(candle.low);
         const close = Number(candle.close);
         
-        // Convert time to seconds if it's in milliseconds
+        // Lightweight Charts expects timestamp in seconds.
+        // CoinGecko provides milliseconds, so convert if necessary.
         const timeInSeconds = time > 1e12 ? Math.floor(time / 1000) : time;
         
         return {
@@ -49,7 +50,8 @@ export const useCandles = ({
       })
       .sort((a, b) => a.time - b.time); // Ensure candles are sorted by time
     
-    log('Formatted candles:', formatted.slice(0, 3), '...');
+    log('Formatted candles (first 3):', formatted.slice(0, 3));
+    log('Formatted candles (last 3):', formatted.slice(-3));
     return formatted;
   }, [candles, log]);
 

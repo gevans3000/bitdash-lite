@@ -1,6 +1,7 @@
 import { Candle } from './types';
 import { rsi, vwap, ema, atr } from './indicators';
 import { TradingSignal } from './types';
+import { signalEmitter } from './signalEmitter';
 
 /**
  * Detects bullish RSI divergence.
@@ -218,10 +219,11 @@ export function generateSignal(candles: Candle[], higherTimeframeCandles: Candle
   // Volume and Volatility Check (Phase 2, Step 3)
   // For simplicity, let's assume a "healthy" volume is above the average of the last 10 candles
   // and ATR is not extremely low (e.g., > 0.05% of price)
-  const recentVolumes = candles.slice(-10).map(c => c.volume);
-  const avgVolume = recentVolumes.reduce((a, b) => a + b, 0) / recentVolumes.length;
-  const isVolumeHealthy = candles[candles.length - 1].volume > avgVolume * 0.8; // 80% of avg volume
-  const isVolatilityHealthy = currentAtr > (currentPrice * 0.0005); // ATR > 0.05% of price
+  const recentVolumes: number[] = candles.slice(-10).map(c => c.volume).filter((v): v is number => typeof v === 'number');
+  const avgVolume = recentVolumes.length > 0 ? recentVolumes.reduce((a, b) => a + b, 0) / recentVolumes.length : 0;
+  const lastCandle = candles[candles.length - 1];
+  const isVolumeHealthy = candles.length > 0 && lastCandle && lastCandle.volume !== undefined && lastCandle.volume > avgVolume * 0.8; // 80% of avg volume
+  const isVolatilityHealthy = currentAtr !== null && currentAtr !== undefined && currentAtr > (currentPrice * 0.0005); // ATR > 0.05% of price
 
   // Adjust strength based on volume and volatility
   if (buyScore > 0 && (!isVolumeHealthy || !isVolatilityHealthy)) {
@@ -281,6 +283,8 @@ export function generateSignal(candles: Candle[], higherTimeframeCandles: Candle
     }
   }
 
+  // Emit the signal after it's fully generated
+  signalEmitter.emit(signal); // The emit function in signalEmitter.ts directly takes the signal object
   return signal;
 }
 

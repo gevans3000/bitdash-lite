@@ -17,10 +17,11 @@ export const fetchBitcoinCandles = async (days: number = 7): Promise<Candle[]> =
   
   try {
     const response = await axios.get<number[][]>(
-      `${COINGECKO_API}/coins/bitcoin/ohlc`,
+      `/api/ohlc`, // Use the local proxy API route
       {
         params: {
-          vs_currency: 'usd',
+          coinId: 'bitcoin',
+          vsCurrency: 'usd',
           days: Math.max(1, Math.min(90, days)), // Ensure days is between 1 and 90
         },
         timeout: 10000, // 10 second timeout
@@ -81,6 +82,7 @@ export const fetchBitcoinCandles = async (days: number = 7): Promise<Candle[]> =
     } else {
       console.log('[API] First candle:', candles[0]);
       console.log('[API] Last candle:', candles[candles.length - 1]);
+      console.log('[API] Example time value (first candle):', candles[0]?.time, 'Type:', typeof candles[0]?.time);
     }
     
     return candles;
@@ -142,7 +144,7 @@ const generateMockCandles = (days: number): Candle[] => {
 export const fetchBitcoinPrice = async (): Promise<number> => {
   try {
     const response = await axios.get(
-      `${COINGECKO_API}/simple/price`,
+      `/api/price`, // Use the local proxy API route
       {
         params: {
           ids: 'bitcoin',

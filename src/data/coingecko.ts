@@ -2,12 +2,8 @@ import { PriceData, Candle } from '@/lib/types';
 
 export async function getSimplePrice(): Promise<PriceData> {
   try {
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true`;
-    const response = await fetch(url, {
-        headers: {
-            'x-cg-demo-api-key': process.env.COINGECKO_API_KEY || ''
-        }
-    });
+    const url = `/api/price`; // Use the local proxy API route
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch price from CoinGecko');
     }
@@ -29,12 +25,8 @@ export async function fetchCandles(coinId: string, vsCurrency: string, days: num
     // 1 day: 30 minutes interval
     // 7 days, 14 days, 30 days, 90 days, 180 days, 365 days: 4 hours interval
     // max: daily interval
-    const url = `https://api.coingecko.com/api/v3/coins/${coinId}/ohlc?vs_currency=${vsCurrency}&days=${days}`;
-    const response = await fetch(url, {
-        headers: {
-            'x-cg-demo-api-key': process.env.COINGECKO_API_KEY || ''
-        }
-    });
+    const url = `/api/ohlc?coinId=${coinId}&vsCurrency=${vsCurrency}&days=${days}`; // Use the local proxy API route
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Failed to fetch OHLC candles from CoinGecko: ${response.statusText}`);
     }
