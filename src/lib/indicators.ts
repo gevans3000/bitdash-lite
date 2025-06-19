@@ -178,3 +178,76 @@ export function ema(values: number[], period: number): (number | null)[] {
   
   return result;
 }
+
+/**
+ * Calculates Volume Weighted Average Price (VWAP)
+ * @param candles Array of Candle objects (must contain open, high, low, close, volume)
+ * @returns Array of VWAP values
+ */
+export function vwap(candles: Candle[]): number[] {
+  if (!candles.length) return [];
+
+  const vwapValues: number[] = [];
+  let cumulativeTypicalPriceVolume = 0;
+  let cumulativeVolume = 0;
+
+  for (let i = 0; i < candles.length; i++) {
+    const candle = candles[i];
+    const typicalPrice = (candle.high + candle.low + candle.close) / 3;
+    const typicalPriceVolume = typicalPrice * candle.volume;
+
+    cumulativeTypicalPriceVolume += typicalPriceVolume;
+    cumulativeVolume += candle.volume;
+
+    if (cumulativeVolume > 0) {
+      vwapValues.push(cumulativeTypicalPriceVolume / cumulativeVolume);
+    } else {
+      vwapValues.push(0); // Or handle as null/NaN if preferred for no volume
+    }
+  }
+  return vwapValues;
+}
+/**
+ * Calculates Average True Range (ATR)
+ * @param candles Array of Candle objects
+ * @param period Number of periods to consider (default: 14)
+ * @returns Array of ATR values
+ */
+export function atr(candles: Candle[], period: number = 14): (number | null)[] {
+    if (candles.length < period) {
+        return Array(candles.length).fill(null);
+    }
+
+    const trueRanges: number[] = [];
+    for (let i = 0; i < candles.length; i++) {
+        const high = candles[i].high;
+        const low = candles[i].low;
+        
+        if (i === 0) {
+            trueRanges.push(high - low);
+            continue;
+        }
+
+        const prevClose = candles[i - 1].close;
+        const tr = Math.max(high - low, Math.abs(high - prevClose), Math.abs(low - prevClose));
+        trueRanges.push(tr);
+    }
+
+    const results: (number | null)[] = Array(period - 1).fill(null);
+    
+    // First ATR is the simple moving average of the first 'period' true ranges.
+    let sumOfTrs = 0;
+    for (let i = 0; i < period; i++) {
+        sumOfTrs += trueRanges[i];
+    }
+    let currentAtr: number = sumOfTrs / period;
+    results.push(currentAtr);
+
+    // Subsequent ATRs are smoothed.
+    for (let i = period; i < trueRanges.length; i++) {
+        currentAtr = (currentAtr * (period - 1) + trueRanges[i]) / period;
+        results.push(currentAtr);
+    }
+
+    return results;
+}

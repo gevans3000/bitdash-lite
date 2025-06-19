@@ -4,7 +4,12 @@ export interface Candle {
   high: number;
   low: number;
   close: number;
-  volume?: number;
+  volume: number;
+}
+
+export interface PriceData {
+  price: number;
+  change: number;
 }
 
 export type Timeframe = '1m' | '5m' | '15m' | '1h' | '4h' | '1d';
@@ -20,16 +25,24 @@ export interface MarketData {
 
 export type Exchange = 'coinbase' | 'kraken';
 
-export interface Signal {
-  type: 'BUY' | 'SELL' | 'NEUTRAL';
+export type SignalStrength = 'WEAK' | 'MODERATE' | 'STRONG';
+
+export interface TradingSignal {
+  direction: 'BUY' | 'SELL' | 'NEUTRAL';
+  strength: SignalStrength;
+  indicators: {
+    rsi?: number | null;
+    vwap?: number | null;
+    atr?: number | null;
+    ema9?: number | null;
+    ema21?: number | null;
+  };
   timestamp: number;
-  confidence?: number;
-  indicators?: {
-    rsi?: number;
-    macd?: {
-      value: number;
-      signal: number;
-      histogram: number;
-    };
+  reason?: string;
+  tradeParameters?: {
+    entry: string;
+    stopLoss: string;
+    profitTarget1: string;
+    profitTarget2: string;
   };
 }
